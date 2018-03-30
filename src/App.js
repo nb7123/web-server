@@ -9,18 +9,24 @@ import {
 
 import {connect} from 'mqtt';
 
+const mqtt_server_url = "wss://light-bulb.cn:8084/mqtt";
+const topic_send = "lb/send";
+const topic_response = "lb/response/";
+
 const intentions = [];
 for(var i = 1; i< 100; i++) {
-  intentions[i] = {key: i, value: i}
+  intentions[i] = {key: i, value: i + ' 万元'}
 }
 
 const styles = [
-  {label: '风格1', value: '风格1'},
-  {label: '风格2', value: '风格2'},
-  {label: '风格3', value: '风格3'},
-  {label: '风格4', value: '风格4'},
-  {label: '风格5', value: '风格5'},
-  {label: '风格6', value: '风格6'},
+  {key: 1, value: '现代简约'},
+  {key: 7, value: '新中式风格'},
+  {key: 2, value: '地中海风格'},
+  {key: 3, value: '美式乡村'},
+  {key: 4, value: '日式风格'},
+  {key: 5, value: '东南亚风格'},
+  {key: 6, value: '田园风格'},
+  {key: 8, value: '古典欧式'},
 ];
 
 const itemStyle = {
@@ -34,8 +40,8 @@ class App extends Component {
     name: "UNKNOWN",
     address: "UNKNOWN",
     telephone: "UNKNOWN",
-    intention: 3,
-    style: "精典中式"
+    intention: '3 万元',
+    style: styles[0].value
   };
 
   _handleIntentionChange = (e) => {
@@ -50,15 +56,24 @@ class App extends Component {
     })
   };
 
-  _testConnect = () => {
-    console.log("Test connect mqtt server.");
-    const client  = connect({host: '192.168.2.80', port: 8083, clientId: 'abcd_1234'});
-    // let client = this.mqtt.connect('wxs://test.mosquitto.org');
+  _sendData = () => {
+    let data = [];
+    data[0] = {name: this.state.name};
+    data[1] = {address: this.state.address};
+    data[2] = {telephone: this.state.telephone};
+    data[3] = {intention: this.state.intention};
+    data[4] = {style: this.state.style};
+
+
+    const client_id = 'C_' + new Date().getTime();
+    console.log('Client id', client_id);
+
+    const client  = connect(mqtt_server_url, {clientId: client_id});
 
     client.on('connect', function () {
-      client.subscribe('presence');
-      client.publish('presence', 'Hello mqtt');
+      client.subscribe(topic_response + client_id);
       console.log("Connect", "connected");
+      client.publish(topic_send, JSON.stringify(data))
     });
 
     client.on('error', function (e) {
@@ -69,31 +84,12 @@ class App extends Component {
     client.on('message', function (topic, message) {
       // message is Buffer
       console.log(message.toString());
+      window.opener=null;
+      window.open('','_self');
+      window.close();
       client.end()
     })
   };
-
-
-  // componentDidMount() {
-  //   let client  = this.mqtt.connect([{host: "192.168.2.80", port: 1883}]);
-  //
-  //   client.on('connect', function () {
-  //     client.subscribe('presence');
-  //     client.publish('presence', 'Hello mqtt');
-  //     console.log("connected");
-  //   });
-  //
-  //   client.on('error', function (e) {
-  //     console.log(e);
-  //   });
-  //
-  //
-  //   client.on('message', function (topic, message) {
-  //     // message is Buffer
-  //     console.log(message.toString());
-  //     client.end()
-  //   })
-  // }
 
   render() {
     return (
@@ -103,29 +99,27 @@ class App extends Component {
           id = "name"
           label = "您的姓名"
           marggin = "normal"
-        />
+          onChange = {(e) => {this.setState({name: e.target.value})}}
+        /><br/>
 
-        <div>
           <TextField
             style = {itemStyle}
             id = "address"
             label = "您的地址"
             marggin = "normal"
-          />
-        </div>
+            onChange = {(e) => {this.setState({address: e.target.value})}}
+          /><br/>
 
 
-        <div>
           <TextField
             style = {itemStyle}
             id = "telephone"
             label = "您的联系电话"
             marggin = "normal"
             helperText = "非常重要，请您仔细填写！"
-          />
-        </div>
+            onChange = {(e) => {this.setState({telephone: e.target.value})}}
+          /><br/>
 
-        <div>
           <TextField
             style = {itemStyle}
             select = {true}
@@ -139,14 +133,12 @@ class App extends Component {
             {
               intentions.map(intention => (
               <MenuItem key={intention.key} value={intention.value}>
-                {intention.key}
+                {intention.value}
               </MenuItem>))
             }
-          </TextField>
-        </div>
+          </TextField><br/>
 
 
-        <form>
           <TextField
             style = {itemStyle}
             id = "style"
@@ -158,18 +150,18 @@ class App extends Component {
           >
             {
               styles.map(style => (
-                <MenuItem key={style.label} value={style.value}>
-                  {style.label}
+                <MenuItem key={style.key} value={style.value}>
+                  {style.value}
                 </MenuItem>))
             }
-          </TextField>
-        </form>
+          </TextField><br/>
 
         <Button
           style = {itemStyle}
-          onClick = {this._testConnect}
-          className={this.props.button} variant="raised" color="primary">
-          Send
+          onClick = {this._sendData}
+          variant="raised"
+          color="primary">
+          愉快的填好了
           <SvgIcon>
             <path d="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
           </SvgIcon>
