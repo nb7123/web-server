@@ -13,6 +13,10 @@ const mqtt_server_url = "wss://light-bulb.cn:8084/mqtt";
 const topic_send = "lb/send";
 const topic_response = "lb/response/";
 
+const client_id = 'C_' + new Date().getTime();
+
+var client;
+
 const intentions = [];
 for(var i = 1; i< 100; i++) {
   intentions[i] = {key: i, value: i + ' 万元'}
@@ -56,24 +60,12 @@ class App extends Component {
     })
   };
 
-  _sendData = () => {
-    let data = [];
-    data[0] = {name: this.state.name};
-    data[1] = {address: this.state.address};
-    data[2] = {telephone: this.state.telephone};
-    data[3] = {intention: this.state.intention};
-    data[4] = {style: this.state.style};
-
-
-    const client_id = 'C_' + new Date().getTime();
-    console.log('Client id', client_id);
-
-    const client  = connect(mqtt_server_url, {clientId: client_id});
+  componentDidMount() {
+    client  = connect(mqtt_server_url, {clientId: client_id});
 
     client.on('connect', function () {
       client.subscribe(topic_response + client_id);
       console.log("Connect", "connected");
-      client.publish(topic_send, JSON.stringify(data))
     });
 
     client.on('error', function (e) {
@@ -84,11 +76,27 @@ class App extends Component {
     client.on('message', function (topic, message) {
       // message is Buffer
       console.log(message.toString());
-      window.opener=null;
-      window.open('','_self');
-      window.close();
-      client.end()
+      alert("你的信息我们已经收到，我们会尽快安排工作人员跟您联系！");
+      // window.opener=null;
+      // window.open('','_self');
+      // window.close();
+      // client.end()
     })
+  }
+
+  _sendData = () => {
+    let data = {
+      name: this.state.name,
+      address: this.state.address,
+      telephone: this.state.telephone,
+      budget: this.state.intention,
+      style: this.state.style,
+      client_id: client_id,
+    };
+
+    console.log('Client id', client_id);
+
+    client.publish(topic_send, JSON.stringify(data))
   };
 
   render() {
