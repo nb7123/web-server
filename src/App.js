@@ -120,9 +120,6 @@ class App extends Component {
   };
 
   render() {
-    let src = "https://img-blog.csdn.net/20171216135929809?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWJ1bmRhbnRzdHVkeQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast";
-    let imgStyle = {width: '100%'};
-
     switch (this.state.path) {
         case "styledetail":
           return (
