@@ -3,7 +3,7 @@ import './App.css';
 
 // let urlPath = "http://www.baidu.com";
 // let urlPath = "http://light-bulb.cn/effect/record/pictures";
-const urlPath = "http://light-bulb.cn/effect/record/pictures";
+const urlPath = "http://light-bulb.cn:7788/effect/record/pictures";
 
 class StyleDetail extends Component {
     state = {
