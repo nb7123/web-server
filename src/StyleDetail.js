@@ -12,7 +12,7 @@ class StyleDetail extends Component {
         let data = {record_id: Number(this.props.id)};
         formData.append("data", JSON.stringify(data));
         // let urlPath = "http://www.baidu.com";
-        let urlPath = "http://192.168.18.188:7788/effect/record/pictures";
+        let urlPath = "https://light-bulb.cn/effect/record/pictures";
         // let urlPath = "http://light-bulb.cn/effect/record/pictures";
 
         fetch(urlPath, {
