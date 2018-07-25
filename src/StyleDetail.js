@@ -11,9 +11,7 @@ class StyleDetail extends Component {
     };
 
     componentDidMount() {
-        let formData = new FormData();
         let data = {record_id: Number(this.props.id)};
-        formData.append("data", JSON.stringify(data));
 
         fetch(urlPath, {
             method: "POST",
