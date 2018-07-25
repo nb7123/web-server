@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
 
+// let urlPath = "http://www.baidu.com";
+// let urlPath = "http://light-bulb.cn/effect/record/pictures";
+const urlPath = "http://light-bulb.cn/effect/record/pictures";
 
 class StyleDetail extends Component {
     state = {
@@ -11,9 +14,6 @@ class StyleDetail extends Component {
         let formData = new FormData();
         let data = {record_id: Number(this.props.id)};
         formData.append("data", JSON.stringify(data));
-        // let urlPath = "http://www.baidu.com";
-        let urlPath = "https://light-bulb.cn/effect/record/pictures";
-        // let urlPath = "http://light-bulb.cn/effect/record/pictures";
 
         fetch(urlPath, {
             method: "POST",
