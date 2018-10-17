@@ -7,17 +7,9 @@ import {
     MenuItem,
 } from '@material-ui/core';
 
-import {connect} from 'mqtt';
 import StyleDetail from './StyleDetail'
 
-const mqtt_server_url = "wss://light-bulb.cn:8084/mqtt";
-const topic_send = "lb/send";
-const topic_response = "lb/response/";
-
-const client_id = 'C_' + new Date().getTime();
-
-var client;
-
+const intentionAddPath = "https://light-bulb.cn:7443/intention/add";
 const intentions = [];
 for(var i = 1; i< 100; i++) {
   intentions[i] = {key: i, value: i + ' 万元'}
@@ -62,28 +54,6 @@ class App extends Component {
   };
 
   componentDidMount() {
-    client  = connect(mqtt_server_url, {clientId: client_id});
-
-    client.on('connect', function () {
-      client.subscribe(topic_response + client_id);
-      console.log("Connect", "connected");
-    });
-
-    client.on('error', function (e) {
-      console.log("Connect error", e);
-    });
-
-
-    client.on('message', function (topic, message) {
-      // message is Buffer
-      console.log(message.toString());
-      alert("你的信息我们已经收到，我们会尽快安排工作人员跟您联系！");
-      // window.opener=null;
-      // window.open('','_self');
-      // window.close();
-      // client.end()
-    });
-
     this.setState({
         path: this._getPorp("path")
     });
@@ -106,17 +76,36 @@ class App extends Component {
 
   _sendData = () => {
     let data = {
-      name: this.state.name,
+      username: this.state.name,
       address: this.state.address,
       telephone: this.state.telephone,
       budget: this.state.intention,
       style: this.state.style,
-      client_id: client_id,
     };
 
-    console.log('Client id', client_id);
-
-    client.publish(topic_send, JSON.stringify(data))
+      fetch(intentionAddPath, {
+          method: "POST",
+          body: "data=" + JSON.stringify(data),
+          mode: "cors",
+          headers: {
+              "Access-Control-Request-Headers": "*",
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+      }).then((res) => {
+          if (res.status !== 200) {
+              console.log("Some error, code: ", res.status)
+          } else {
+              return res.json()
+          }
+      }).then((json) => {
+          console.log("Json result: ", json);
+          if (json.code === 0) {
+              console.log("Valid data");
+              alert("你的信息我们已经收到，我们会尽快安排工作人员跟您联系！");
+          } else {
+              alert(json.msg)
+          }
+      }).catch((reason => {alert("Reject reason:" + reason)}));
   };
 
   render() {

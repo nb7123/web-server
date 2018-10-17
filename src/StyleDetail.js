@@ -3,7 +3,7 @@ import './App.css';
 
 // let urlPath = "http://www.baidu.com";
 // let urlPath = "http://light-bulb.cn/effect/record/pictures";
-const urlPath = "https://light-bulb.cn:8888/effect/record/pictures";
+const urlPath = "https://light-bulb.cn:7443/search/effect/record/file/list";
 
 class StyleDetail extends Component {
     state = {
@@ -11,7 +11,7 @@ class StyleDetail extends Component {
     };
 
     componentDidMount() {
-        let data = {record_id: Number(this.props.id)};
+        let data = {data_id: Number(this.props.id)};
 
         fetch(urlPath, {
             method: "POST",
