@@ -7,9 +7,7 @@ import {
     MenuItem,
 } from '@material-ui/core';
 
-import StyleDetail from './StyleDetail'
-
-const intentionAddPath = "https://light-bulb.cn:7443/intention/add";
+const intentionAddPath = "http://light-bulb.cn:7788/intention/add";
 const intentions = [];
 for(var i = 1; i< 100; i++) {
   intentions[i] = {key: i, value: i + ' 万元'}
@@ -53,27 +51,6 @@ class App extends Component {
     })
   };
 
-  componentDidMount() {
-    this.setState({
-        path: this._getPorp("path")
-    });
-    this.setState({
-        dataId: this._getPorp("id")
-    });
-
-    console.log("Search: ", window.location.search);
-  }
-
-  _getPorp(key) {
-      let reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)", "i");
-      let r = window.location.search.substr(1).match(reg);
-      if (r !== null) {
-          return unescape(r[2]);
-      }
-
-      return null;
-  }
-
   _sendData = () => {
     let data = {
       username: this.state.name,
@@ -109,89 +86,82 @@ class App extends Component {
   };
 
   render() {
-    switch (this.state.path) {
-        case "styledetail":
-          return (
-              <StyleDetail id = {this.state.dataId}/>
-          );
-        default:
-            return (
-                <form className="App">
-                    <TextField
-                        style = {itemStyle}
-                        id = "name"
-                        label = "您的姓名"
-                        marggin = "normal"
-                        onChange = {(e) => {this.setState({name: e.target.value})}}
-                    /><br/>
+      return (
+          <form className="App">
+              <TextField
+                  style = {itemStyle}
+                  id = "name"
+                  label = "您的姓名"
+                  marggin = "normal"
+                  onChange = {(e) => {this.setState({name: e.target.value})}}
+              /><br/>
 
-                    <TextField
-                        style = {itemStyle}
-                        id = "address"
-                        label = "您的地址"
-                        marggin = "normal"
-                        onChange = {(e) => {this.setState({address: e.target.value})}}
-                    /><br/>
+              <TextField
+                  style = {itemStyle}
+                  id = "address"
+                  label = "您的地址"
+                  marggin = "normal"
+                  onChange = {(e) => {this.setState({address: e.target.value})}}
+              /><br/>
 
 
-                    <TextField
-                        style = {itemStyle}
-                        id = "telephone"
-                        label = "您的联系电话"
-                        marggin = "normal"
-                        helperText = "非常重要，请您仔细填写！"
-                        onChange = {(e) => {this.setState({telephone: e.target.value})}}
-                    /><br/>
+              <TextField
+                  style = {itemStyle}
+                  id = "telephone"
+                  label = "您的联系电话"
+                  marggin = "normal"
+                  helperText = "非常重要，请您仔细填写！"
+                  onChange = {(e) => {this.setState({telephone: e.target.value})}}
+              /><br/>
 
-                    <TextField
-                        style = {itemStyle}
-                        select = {true}
-                        fullWidth = {false}
-                        id = "intention"
-                        label = "装修预算"
-                        marggin = "normal"
-                        value = {this.state.intention}
-                        onChange = {this._handleIntentionChange}
-                        helperText = "单位(万元)">
-                        {
-                            intentions.map(intention => (
-                                <MenuItem key={intention.key} value={intention.value}>
-                                    {intention.value}
-                                </MenuItem>))
-                        }
-                    </TextField><br/>
+              <TextField
+                  style = {itemStyle}
+                  select = {true}
+                  fullWidth = {false}
+                  id = "intention"
+                  label = "装修预算"
+                  marggin = "normal"
+                  value = {this.state.intention}
+                  onChange = {this._handleIntentionChange}
+                  helperText = "单位(万元)">
+                  {
+                      intentions.map(intention => (
+                          <MenuItem key={intention.key} value={intention.value}>
+                              {intention.value}
+                          </MenuItem>))
+                  }
+              </TextField><br/>
 
 
-                    <TextField
-                        style = {itemStyle}
-                        id = "style"
-                        select = {true}
-                        label = "装修风格"
-                        value = {this.state.style}
-                        onChange = {this._onStyleSelected}
-                        marggin = "normal"
-                    >
-                        {
-                            styles.map(style => (
-                                <MenuItem key={style.key} value={style.value}>
-                                    {style.value}
-                                </MenuItem>))
-                        }
-                    </TextField><br/>
+              <TextField
+                  style = {itemStyle}
+                  id = "style"
+                  select = {true}
+                  label = "装修风格"
+                  value = {this.state.style}
+                  onChange = {this._onStyleSelected}
+                  marggin = "normal"
+              >
+                  {
+                      styles.map(style => (
+                          <MenuItem key={style.key} value={style.value}>
+                              {style.value}
+                          </MenuItem>))
+                  }
+              </TextField><br/>
 
-                    <Button
-                        style = {itemStyle}
-                        onClick = {this._sendData}
-                        variant="raised"
-                        color="primary">
-                        愉快的填好了
-                        <SvgIcon>
-                            <path d="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
-                        </SvgIcon>
-                    </Button>
-                </form>
-            );
-    }
+              <Button
+                  style = {itemStyle}
+                  onClick = {this._sendData}
+                  variant="raised"
+                  color="primary">
+                  愉快的填好了
+                  <SvgIcon>
+                      <path d="M2.01,21L23,12 2.01,3 2,10l15,2 -15,2z"/>
+                  </SvgIcon>
+              </Button>
+          </form>
+      );
   }
 }
 
