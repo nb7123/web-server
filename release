@@ -1,0 +1,3 @@
+#!/bin/bash
+npm run build &&
+scp -r build/* michael@118.24.116.40:/home/michael/app/web-server/htdocs
