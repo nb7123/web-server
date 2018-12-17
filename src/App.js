@@ -52,6 +52,11 @@ class App extends Component {
   };
 
   _sendData = () => {
+      if (this.state.name === "UNKNOWN" || this.state.address === "UNKNOWN" || this.state.telephone === "UNKNOWN") {
+          alert("信息填写不完整");
+          return
+      }
+
     let data = {
       username: this.state.name,
       address: this.state.address,
