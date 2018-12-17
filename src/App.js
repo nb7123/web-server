@@ -52,42 +52,46 @@ class App extends Component {
   };
 
   _sendData = () => {
-      if (this.state.name === "UNKNOWN" || this.state.address === "UNKNOWN" || this.state.telephone === "UNKNOWN") {
-          alert("信息填写不完整");
-          return
+      if (this.state.name.length === 0 || this.state.name === "UNKNOWN") {
+          alert("为了更好的为您服务，请填写您的姓名");
+      } else if (this.state.telephone.length !== 11) {
+          alert("为了更好的为您服务，请填写正确的手机号码");
+      } else if (this.state.address.length === 0 || this.state.address === "UNKNOWN") {
+          alert("为了更好的为您服务，请填写您的详细地址");
       }
+      else {
+          let data = {
+              username: this.state.name,
+              address: this.state.address,
+              telephone: this.state.telephone,
+              budget: this.state.intention,
+              style: this.state.style,
+          };
 
-    let data = {
-      username: this.state.name,
-      address: this.state.address,
-      telephone: this.state.telephone,
-      budget: this.state.intention,
-      style: this.state.style,
-    };
-
-      fetch(intentionAddPath, {
-          method: "POST",
-          body: "data=" + JSON.stringify(data),
-          mode: "cors",
-          headers: {
-              "Access-Control-Request-Headers": "*",
-              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-          },
-      }).then((res) => {
-          if (res.status !== 200) {
-              console.log("Some error, code: ", res.status)
-          } else {
-              return res.json()
-          }
-      }).then((json) => {
-          console.log("Json result: ", json);
-          if (json.code === 0) {
-              console.log("Valid data");
-              alert("你的信息我们已经收到，我们会尽快安排工作人员跟您联系！");
-          } else {
-              alert(json.msg)
-          }
-      }).catch((reason => {alert("Reject reason:" + reason)}));
+          fetch(intentionAddPath, {
+              method: "POST",
+              body: "data=" + JSON.stringify(data),
+              mode: "cors",
+              headers: {
+                  "Access-Control-Request-Headers": "*",
+                  'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+              },
+          }).then((res) => {
+              if (res.status !== 200) {
+                  console.log("Some error, code: ", res.status)
+              } else {
+                  return res.json()
+              }
+          }).then((json) => {
+              console.log("Json result: ", json);
+              if (json.code === 0) {
+                  console.log("Valid data");
+                  alert("你的信息我们已经收到，我们会尽快安排工作人员跟您联系！");
+              } else {
+                  alert(json.msg)
+              }
+          }).catch((reason => {alert("Reject reason:" + reason)}));
+      }
   };
 
   render() {
